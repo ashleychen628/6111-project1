@@ -1,7 +1,7 @@
 import collections
 import re
 
-class RefineQuery:
+class QueryExpansion:
   def __init__(self, relevant_results):
     self.relevant_results = relevant_results
   

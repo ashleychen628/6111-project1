@@ -43,6 +43,7 @@ class InfoRetrieval:
                 print("No relevant results. Stopping.")
                 break
 
+            # TODO: call QueryExpansion
             new_words = extract_keywords(relevant_results)
             print(f"\nExpanding query with: {new_words}")
 
