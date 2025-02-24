@@ -15,15 +15,15 @@ class QueryExpansion:
     #     filtered_words = filter_stop_words(words, stop_words)
     # return filtered_words
 
-  def extract_keywords(self):
+  def select_top2_words(self):
       """
       Extract the two most important words from the relevant results tagged by the user.
       """
-      text = " ".join([res["title"] + " " + res["snippet"] for res in self.relevant_results])
-      words = re.findall(r'\b\w+\b', text.lower())
+      # text = " ".join([res["title"] + " " + res["snippet"] for res in self.relevant_results])
+      # words = re.findall(r'\b\w+\b', text.lower())
 
-      # TODO: filter the stop words if necessary
-      word_counts = collections.Counter(filtered_words)
-      top_words = [w for w, _ in word_counts.most_common(2)]
-
+      # # TODO: filter the stop words if necessary
+      # word_counts = collections.Counter(filtered_words)
+      # top_words = [w for w, _ in word_counts.most_common(2)]
+      top_words = "hihihihi"
       return top_words
