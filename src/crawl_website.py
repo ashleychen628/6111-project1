@@ -3,14 +3,8 @@ import re
 import os
 from bs4 import BeautifulSoup
 
-
 def download_html(url, output_file):
-    """
-    Downloads a webpage and saves it as an HTML file.
-    
-    :param url: The URL to fetch.
-    :param output_file: The filename to save the HTML content.
-    """
+    """ Downloads a webpage and saves it as an HTML file. """
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -24,12 +18,8 @@ def download_html(url, output_file):
         print(f"Error: {e}")
 
 def clean_html(file_path):
-    """
-    Reads an HTML file, extracts text, and cleans it for indexing.
+    """ Reads an HTML file, extracts text, and cleans it for indexing. """
 
-    :param file_path: Path to the HTML file.
-    :return: List of cleaned words (tokens).
-    """
     with open(file_path, "r", encoding="utf-8") as file:
         raw_html = file.read()
 
