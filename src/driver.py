@@ -44,11 +44,11 @@ class InfoRetrieval:
                 break
 
             # TODO: call QueryExpansion
-            new_words = extract_keywords(relevant_results)
-            print(f"\nExpanding query with: {new_words}")
+            # new_words = extract_keywords(relevant_results)
+            # print(f"\nExpanding query with: {new_words}")
 
-            self.query = self.query + " " + " ".join(new_words)
-            print(f"New Query: {self.query}")
+            # self.query = self.query + " " + " ".join(new_words)
+            # print(f"New Query: {self.query}")
     
 
     def google_search(self):
@@ -91,3 +91,24 @@ class InfoRetrieval:
                 relevant_results.append(result)
 
         return relevant_results
+
+    def download_content(url, output_file):
+        """
+        Downloads the content of a non-HTML URL and saves it as a text file.
+        
+        :param url: The URL to fetch content from.
+        :param output_file: The filename to save the content.
+        """
+        try:
+            response = requests.get(url, stream=True)  # Stream response to handle large files
+            response.raise_for_status()  # Raise an error for bad responses (4xx, 5xx)
+
+            with open(output_file, "wb") as file:
+                for chunk in response.iter_content(chunk_size=1024):
+                    file.write(chunk)
+
+            print(f"Downloaded content saved to {output_file}")
+
+        except requests.exceptions.RequestException as e:
+            print(f"Error: {e}")
+
