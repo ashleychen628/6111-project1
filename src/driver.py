@@ -12,52 +12,53 @@ with open("config.json", "r") as config_file:
 API_KEY = config["api_key"]
 CX_ID = config["cx_id"]
 
+
 class InfoRetrieval:
     def __init__(self, target_precision, query):
-      """Recieve the target precision and user's query. """
-      self.target_precision = target_precision
-      self.query = query
-      self.total_results = 10
+        """Receive the target precision and user's query."""
+        self.target_precision = target_precision
+        self.query = query
+        self.total_results = 10  # Top-10 results per iteration
 
     def start(self):
         """Start the searching process."""
         if self.query is None or self.target_precision is None:
             self.query = input("Search Here: ")
             self.target_precision = float(input("Enter target precision (0 to 1): "))
-        else:
-            used_words = set(self.query.split())
 
-            while True:
-                print(f"\nSearching for: {self.query}")
-                search_results = self.google_search()
+        used_words = self.query.split()
+        used_words_set = set(used_words)
 
-                if not search_results or len(search_results) < 10:
-                    print("Not enough results. Stopping.")
-                    break
+        while True:
+            print(f"\nSearching for: {' '.join(used_words)}")
+            search_results = self.google_search()
 
-                relevant_results = self.get_user_feedback(search_results)
-                precision = len(relevant_results) / self.total_results  # Precision@10
+            if not search_results or len(search_results) < 10:
+                print("Not enough results. Stopping.")
+                break
 
-                print(f"\nPrecision: {precision:.2f}")
+            relevant_results = self.get_user_feedback(search_results)
+            precision = len(relevant_results) / self.total_results  # Precision@10
 
-                if precision >= self.target_precision:
-                    print("Target precision reached. Stopping.")
-                    break
-                elif precision == 0:
-                    print("No relevant results. Stopping.")
-                    break
-                else:
-                    query_expansion = QueryExpansion(relevant_results, self.query)
-                    top2_words = query_expansion.select_top2_words()
+            print(f"\nPrecision: {precision:.2f}")
 
+            if precision >= self.target_precision:
+                print("Target precision reached. Stopping.")
+                break
+            elif precision == 0:
+                print("No relevant results. Stopping.")
+                break
+            else:
+                query_expansion = QueryExpansion(relevant_results, " ".join(used_words))
+                top2_words = query_expansion.select_top2_words()
 
-                    for word in top2_words:
-                        if word not in used_words:
-                            used_words.add(word)
+                for word in top2_words:
+                    if word not in used_words_set:
+                        used_words.append(word)
+                        used_words_set.add(word)
 
-
-                    self.query = " ".join(used_words)
-                    print(f"Expanded query: {self.query}")
+                self.query = " ".join(used_words)
+                print(f"Expanded query: {self.query}")
 
     def google_search(self):
         """Query the Google API to get the top 10 result. """
