@@ -27,12 +27,12 @@ class QueryExpansion:
             documents.append(filtered_snippet)
 
         # Compute TF-IDF for the selected relevant documents
-        vectorizer = TfidfVectorizer()  # Use custom stopwords
+        vectorizer = TfidfVectorizer()  
         tfidf_matrix = vectorizer.fit_transform(documents)  
-        feature_names = vectorizer.get_feature_names_out()  # Get words
+        feature_names = vectorizer.get_feature_names_out()  
         
         # Compute sum TF-IDF score for each word across all selected docs
-        tfidf_scores = np.sum(tfidf_matrix.toarray(), axis=0)  # Mean across documents
+        tfidf_scores = np.sum(tfidf_matrix.toarray(), axis=0)  
         
         # Sort words by TF-IDF score in descending order
         sorted_indices = np.argsort(tfidf_scores)[::-1]  # Get indices of top words
@@ -43,7 +43,7 @@ class QueryExpansion:
         for word in sorted_words:
             if word not in self.current_query.casefold():
                 new_words.append(word)
-            if len(new_words) == 2:  # Select exactly `num_words`
+            if len(new_words) == 2:  
                 break
 
         return new_words
