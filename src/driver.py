@@ -20,8 +20,8 @@ class InfoRetrieval:
       self.total_results = 10
 
     def start(self):
-        """Start the searching process. """
-        if self.query == None or self.target_precision == None:
+        """Start the searching process."""
+        if self.query is None or self.target_precision is None:
             self.query = input("Search Here: ")
             self.target_precision = float(input("Enter target precision (0 to 1): "))
         else:
@@ -46,24 +46,11 @@ class InfoRetrieval:
                     break
                 else:
                     query_expansion = QueryExpansion(relevant_results, self.query)
-                    possible_queries = query_expansion.select_top2_words()
+                    top2_words = query_expansion.select_top2_words()
 
-                    best_query = self.query
-                    best_precision = 0
-
-                    for new_query in possible_queries:
-                        self.query = new_query
-                        print(f"\nTrying query: {self.query}")
-                        search_results = self.google_search()
-                        relevant_results = self.get_user_feedback(search_results)
-                        new_precision = len(relevant_results) / self.total_results
-
-                        if new_precision > best_precision:
-                            best_precision = new_precision
-                            best_query = new_query
-
-                    self.query = best_query
-                    print(f"Best query chosen: {self.query}")
+                    new_query_words = self.query.split() + top2_words  # Append new words at the end
+                    self.query = " ".join(new_query_words)
+                    print(f"Expanded query: {self.query}")
 
     def google_search(self):
         """Query the Google API to get the top 10 result. """
