@@ -45,15 +45,10 @@ class InfoRetrieval:
                 print("No relevant results. Stopping.")
                 break
             else:
-                query_expansion = QueryExpansion(relevant_results)
+                query_expansion = QueryExpansion(relevant_results, self.query)
                 top2_words = query_expansion.select_top2_words()
-                self.query = self.query + " " + top2_words
-            # new_words = extract_keywords(relevant_results)
-            # print(f"\nExpanding query with: {new_words}")
-
-            # self.query = self.query + " " + " ".join(new_words)
-            # print(f"New Query: {self.query}")
-    
+                self.query = self.query + " " + top2_words[0] + " " + top2_words[1]
+                
 
     def google_search(self):
         """Query the Google API to get the top 10 result. """
@@ -83,7 +78,7 @@ class InfoRetrieval:
                     # print("an HTML page")
                 url = item.get("link", "")
                 # TODO: handle non-htmls
-                download_and_clean_html(url, idx)
+                # download_and_clean_html(url, idx)
                 search_results.append({
                     "url": item.get("link", ""),
                     "title": item.get("title", ""),
