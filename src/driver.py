@@ -13,18 +13,14 @@ API_KEY = config["api_key"]
 CX_ID = config["cx_id"]
 
 class InfoRetrieval:
-    def __init__(self, target_precision, query):
-      """Recieve the target precision and user's query. """
-      self.target_precision = target_precision
-      self.query = query
-      self.total_results = 10
-
     def start(self):
         """Start the searching process."""
         if self.query is None or self.target_precision is None:
             self.query = input("Search Here: ")
             self.target_precision = float(input("Enter target precision (0 to 1): "))
         else:
+            used_words = set(self.query.split())
+
             while True:
                 print(f"\nSearching for: {self.query}")
                 search_results = self.google_search()
@@ -48,8 +44,11 @@ class InfoRetrieval:
                     query_expansion = QueryExpansion(relevant_results, self.query)
                     top2_words = query_expansion.select_top2_words()
 
-                    new_query_words = self.query.split() + top2_words  # Append new words at the end
-                    self.query = " ".join(new_query_words)
+                    for word in top2_words:
+                        if word not in used_words:
+                            used_words.add(word)
+
+                    self.query = " ".join(used_words)
                     print(f"Expanded query: {self.query}")
 
     def google_search(self):
