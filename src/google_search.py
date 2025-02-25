@@ -19,8 +19,8 @@ def google_search(query, api_key=API_KEY, cx_id=CX_ID, num_results=10):
 
         for item in results.get("items", []):
             search_results.append({
-                "title": item.get("title", ""),
                 "url": item.get("link", ""),
+                "title": item.get("title", ""),
                 "snippet": item.get("snippet", "")
             })
 

@@ -1,17 +1,51 @@
 import collections
 import re
+import itertools
+from crawl_website import download_and_clean_html
+from sklearn.feature_extraction.text import TfidfVectorizer
+import glob
+import numpy as np
 
-def extract_keywords(relevant_results):
-    """
-    Extract the two most important words from the relevant results tagged by the user
-    """
-    text = " ".join([res["title"] + " " + res["snippet"] for res in relevant_results])
-    words = re.findall(r'\b\w+\b', text.lower())
 
-    stop_words = {"the", "is", "at", "of", "on", "and", "a", "to", "in"}  # expandable
-    filtered_words = [w for w in words if w not in stop_words]
+class QueryExpansion:
+    def __init__(self, relevant_results, current_query):
+        """Initialize with relevant search results and the current query."""
+        self.relevant_results = relevant_results
+        self.current_query = current_query.split()
 
-    word_counts = collections.Counter(filtered_words)
-    top_words = [w for w, _ in word_counts.most_common(2)]
+    def select_top2_words(self):
+        """Extract the two most important words from relevant results using TF-IDF."""
 
-    return top_words
+        documents = []
+        file_path = "proj1-stop.txt"
+        with open(file_path, "r", encoding="utf-8") as file:
+            stop_words_set = set(line.strip().lower() for line in file)
+
+        for res in self.relevant_results:
+            snippet = re.sub(r"[^a-zA-Z0-9 ]+", "", res["snippet"]).casefold()
+            filtered_snippet = " ".join([word for word in snippet.split() if word not in stop_words_set])
+            documents.append(filtered_snippet)
+
+        # Compute TF-IDF
+        vectorizer = TfidfVectorizer()
+        tfidf_matrix = vectorizer.fit_transform(documents)
+        feature_names = vectorizer.get_feature_names_out()
+
+        # Compute sum TF-IDF score for each word across all documents
+        tfidf_scores = np.sum(tfidf_matrix.toarray(), axis=0)
+
+        # Sort words by TF-IDF score in descending order
+        sorted_indices = np.argsort(tfidf_scores)[::-1]
+        sorted_words = feature_names[sorted_indices]
+
+        # Select words that are NOT already in the query
+        new_words = []
+        for word in sorted_words:
+            if word not in self.current_query:
+                new_words.append(word)
+            if len(new_words) == 2:
+                break
+
+        return new_words
+
+
