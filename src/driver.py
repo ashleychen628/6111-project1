@@ -20,35 +20,50 @@ class InfoRetrieval:
       self.total_results = 10
 
     def start(self):
-      """Start the searching process. """
-      if self.query == None or self.target_precision == None:
-        self.query = input("Search Here: ")
-        self.target_precision = float(input("Enter target precision (0 to 1): "))
-      else:
-        while True:
-            print(f"\nSearching for: {self.query}")
-            search_results = self.google_search()
+        """Start the searching process. """
+        if self.query == None or self.target_precision == None:
+            self.query = input("Search Here: ")
+            self.target_precision = float(input("Enter target precision (0 to 1): "))
+        else:
+            while True:
+                print(f"\nSearching for: {self.query}")
+                search_results = self.google_search()
 
-            if not search_results or len(search_results) < 10:
-                print("Not enough results. Stopping.")
-                break
+                if not search_results or len(search_results) < 10:
+                    print("Not enough results. Stopping.")
+                    break
 
-            relevant_results = self.get_user_feedback(search_results)
-            precision = len(relevant_results) / self.total_results  # Precision@10
+                relevant_results = self.get_user_feedback(search_results)
+                precision = len(relevant_results) / self.total_results  # Precision@10
 
-            print(f"\nPrecision: {precision:.2f}")
+                print(f"\nPrecision: {precision:.2f}")
 
-            if precision >= self.target_precision:
-                print("Target precision reached. Stopping.")
-                break
-            elif precision == 0:
-                print("No relevant results. Stopping.")
-                break
-            else:
-                query_expansion = QueryExpansion(relevant_results, self.query)
-                top2_words = query_expansion.select_top2_words()
-                self.query = self.query + " " + top2_words[0] + " " + top2_words[1]
-                
+                if precision >= self.target_precision:
+                    print("Target precision reached. Stopping.")
+                    break
+                elif precision == 0:
+                    print("No relevant results. Stopping.")
+                    break
+                else:
+                    query_expansion = QueryExpansion(relevant_results, self.query)
+                    possible_queries = query_expansion.select_top2_words()
+
+                    best_query = self.query
+                    best_precision = 0
+
+                    for new_query in possible_queries:
+                        self.query = new_query
+                        print(f"\nTrying query: {self.query}")
+                        search_results = self.google_search()
+                        relevant_results = self.get_user_feedback(search_results)
+                        new_precision = len(relevant_results) / self.total_results
+
+                        if new_precision > best_precision:
+                            best_precision = new_precision
+                            best_query = new_query
+
+                    self.query = best_query
+                    print(f"Best query chosen: {self.query}")
 
     def google_search(self):
         """Query the Google API to get the top 10 result. """
