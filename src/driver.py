@@ -57,7 +57,7 @@ class InfoRetrieval:
                         used_words.append(word)
                         used_words_set.add(word)
 
-                self.query = " ".join(used_words)
+                self.query = " ".join(top2_words)
                 print(f"Expanded query: {self.query}")
 
     def google_search(self):
