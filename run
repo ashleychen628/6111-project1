@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+import sys
+import os
+
+# Add 'src' directory to sys.path
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
+
+import json
+from driver import InfoRetrieval
+
+with open("config.json", "r") as config_file:
+    config = json.load(config_file)
+
+API_KEY = config["api_key"]
+CX_ID = config["cx_id"]
+
+def main(precision, query):
+    inforRetrieval = InfoRetrieval(precision, query)
+    inforRetrieval.start()
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Usage: ./run <target_precision> <query>")
+        sys.exit(1)
+
+    try:
+        precision = float(sys.argv[1])
+        query = sys.argv[2]
+    except ValueError:
+        print("Error: Precision must be a float (0 to 1)")
+        sys.exit(1)
+
+    main(precision, query)
+
