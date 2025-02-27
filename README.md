@@ -2,6 +2,9 @@
 
 # Query Expansion with Relevance Feedback
 
+#### Names: Danyao Chen, Qixuan Wu
+#### UNI: dc3861, qw2431
+
 ## **Project Overview**
 This project implements an **information retrieval system** that improves Google search results using **relevance feedback and query expansion**. The system refines user queries iteratively by incorporating **TF-IDF-based keyword selection** and **Vector Space Model (VSM) ordering** to enhance search precision.
 
@@ -12,6 +15,37 @@ The method follows an **interactive relevance feedback loop**, where:
 4. The system **expands the query** by selecting **two important words** from relevant results using **TF-IDF ranking**.
 5. The **expanded query is reordered** using **cosine similarity** to prioritize relevant terms.
 6. The process repeats until the **desired precision@10** is met or no further improvements can be made.
+
+## **Run the Project**
+```sh
+git clone https://github.com/your-username/your-repo.git
+cd your-repo
+
+// after creating your virtual environment
+python3 -m venv env
+source env/bin/activate
+(env) pip install -r requirements.txt
+
+// after activate your env
+(env) ./run <google api key> <google engine id> <precision> <query>
+// example
+(env) ./run AIzaSyCeF-LloN0i8IJe0HZ8gDLnRTmxSjDpKvw 84f98f408aba949e8 0.9 "Milky Way"
+```
+### **Our Google API key and Google Engine ID**
+- "api_key": "AIzaSyCeF-LloN0i8IJe0HZ8gDLnRTmxSjDpKvw"
+- "cx_id": "84f98f408aba949e8"
+
+
+## **Code Structure**
+```
+|-- src
+    |-- driver.py
+    |-- query_expansion.py
+    |-- crawl_website.py
+|-- run
+|-- requirements.txt
+|-- transcript
+```
 
 ## **Methodology**
 This project implements **two key query expansion techniques**:
@@ -29,6 +63,17 @@ This project implements **two key query expansion techniques**:
 - Computes **cosine similarity** between query words and relevant document vectors.
 - Reorders the **expanded query** to **prioritize more relevant terms**.
 - Ensures the **original query words always remain at the front** to preserve intent.
+
+#### Other External Libraries Used
+The following external libraries are used in this project:
+- collections (Standard Library)
+  Used for efficient data structures such as defaultdict, Counter, and deque, which help in handling data organization and frequency counting.
+- re (Standard Library)
+  Used for regular expression operations, enabling pattern matching and text manipulation.
+- glob (Standard Library)
+  Used for file path matching with wildcard patterns, facilitating batch processing of files in directories.
+- numpy (Third-Party Library)
+  A powerful numerical computing library used for array manipulation, mathematical operations, and efficient data processing.
 
 ## **Query-Modification Method**
 
@@ -97,36 +142,6 @@ After selecting the most relevant words, the query is **expanded and reordered**
 - The **original query is preserved**, and new words are **added in a structured way**.
 - **Cosine similarity reordering** ensures that **more relevant terms appear first**.
 - This method ensures that the query **gradually improves over multiple iterations**, leading to higher precision and better retrieval results.
-
-## **Run the Project**
-```sh
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
-
-// after creating your virtual environment
-python3 -m venv env
-source env/bin/activate
-(env) pip install -r requirements.txt
-
-// after activate your env
-(env) ./run <google api key> <google engine id> <precision> <query>
-// example
-(env) ./run AIzaSyCeF-LloN0i8IJe0HZ8gDLnRTmxSjDpKvw 84f98f408aba949e8 0.9 "Milky Way"
-```
-### **Our Google API key and Google Engine ID**
-- "api_key": "AIzaSyCeF-LloN0i8IJe0HZ8gDLnRTmxSjDpKvw"
-- "cx_id": "84f98f408aba949e8"
-
-
-## **Code Structure**
-```
-|-- src
-    |-- driver.py
-    |-- query_expansion.py
-    |-- crawl_website.py
-|-- run
-|-- requirements.txt
-```
 
 ## **Future Improvements**
 - Implement Rocchio Algorithm to weight relevant and non-relevant terms.
