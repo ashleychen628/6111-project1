@@ -65,19 +65,21 @@ class InfoRetrieval:
             results = response.json()
             search_results = []
 
-            for idx, item in enumerate(results.get("items", [])):
+            idx = 0
+            for item in results.get("items", []):
                 url = item.get("link", "")
                 snippet = item.get("snippet", "")
 
-
                 full_text = download_and_clean_html(url, idx)
 
-                document_text = " ".join(full_text) if full_text else snippet
                 search_results.append({
                     "url": url,
                     "title": item.get("title", ""),
-                    "snippet": document_text
+                    "snippet": snippet,  # 仍然使用 snippet 进行用户交互
+                    "full_text": full_text  # 仅用于 query expansion
                 })
+
+                idx += 1
 
             return search_results
         else:

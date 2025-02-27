@@ -29,7 +29,9 @@ def download_and_clean_html(url, index):
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
 }
 
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=5)
+        if response.status_code == 403:
+            return None
         response.raise_for_status()
 
         soup = BeautifulSoup(response.text, "html.parser")
@@ -45,6 +47,9 @@ def download_and_clean_html(url, index):
 
         tokens = text.split()
 
+        if not os.path.exists(DOC_PATH):
+            os.makedirs(DOC_PATH)
+
         next_index = index + 1 
 
         file_path = os.path.join(DOC_PATH, f"document{next_index}.txt")
@@ -56,7 +61,7 @@ def download_and_clean_html(url, index):
           
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
-
+        return None
    
 # # Usage
 # url = "https://www.milkywaybar.com/"  

@@ -22,9 +22,13 @@ class QueryExpansion:
             stop_words_set = set(line.strip().lower() for line in file)
 
         for res in self.relevant_results:
-            snippet = re.sub(r"[^a-zA-Z0-9 ]+", "", res["snippet"]).casefold()
-            filtered_snippet = " ".join([word for word in snippet.split() if word not in stop_words_set])
-            documents.append(filtered_snippet)
+            if res["full_text"]:
+                text = re.sub(r"[^a-zA-Z0-9 ]+", "", " ".join(res["full_text"])).casefold()
+            else:
+                text = re.sub(r"[^a-zA-Z0-9 ]+", "", res["snippet"]).casefold()
+
+            filtered_text = " ".join([word for word in text.split() if word not in stop_words_set])
+            documents.append(filtered_text)
 
         original_query_text = " ".join(self.current_query)
         documents.append(original_query_text)
