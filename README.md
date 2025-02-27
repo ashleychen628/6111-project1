@@ -52,3 +52,9 @@ pip install -r requirements.txt
 |-- run
 |-- requirements.txt
 ```
+
+## **Future Improvements**
+- Implement Rocchio Algorithm to weight relevant and non-relevant terms.
+- Experiment with Word Embeddings (Word2Vec/BERT) for better query expansion.
+- Integrate stopword removal & stemming for improved term selection.
+
