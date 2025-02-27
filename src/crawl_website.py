@@ -60,7 +60,7 @@ def download_and_clean_html(url, index):
 # output_file = "downloaded_content.html"
 # # download_html(url, output_file)
 
-html_file = "https://www.milkywaybar.com/" 
-tokens = download_and_clean_html(html_file, 1)
+# html_file = "https://www.milkywaybar.com/" 
+# tokens = download_and_clean_html(html_file, 1)
 
-print(tokens[:20])
+# print(tokens[:20])
