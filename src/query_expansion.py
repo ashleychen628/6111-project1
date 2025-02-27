@@ -10,12 +10,13 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 class QueryExpansion:
-    def __init__(self, relevant_results, current_query):
+    def __init__(self, relevant_results, current_query, full_text):
         self.relevant_results = relevant_results
         self.current_query = current_query.casefold().split()
+        self.full_text = full_text
         self.documents = self.process_documents()
         self.vectorizer, self.tfidf_matrix, self.feature_names = self.compute_tfidf(self.documents)
-        
+
     def process_documents(self):
         """ Preprocess snippets: clean text, remove stopwords, and return as list. """
         documents = []
@@ -23,11 +24,9 @@ class QueryExpansion:
         with open(file_path, "r", encoding="utf-8") as file:
           stop_words_set = set(line.strip().lower() for line in file)
         
-        for res in self.relevant_results:
-            snippet = re.sub(r"[^a-zA-Z0-9 ]+", "", res["snippet"]).casefold()
-            filtered_snippet = " ".join([word for word in snippet.split() if word not in stop_words_set])
-            documents.append(filtered_snippet)
-            
+        filtered_full_text = " ".join([word for word in self.full_text if word not in stop_words_set])
+        documents.append(filtered_full_text )
+        
         return documents
 
     def compute_tfidf(self, documents):

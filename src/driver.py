@@ -20,6 +20,7 @@ class InfoRetrieval:
       self.total_results = 10
       self.api_key = api_key
       self.cx_id = cx_id
+      self.url_list = []
 
     def start(self):
       """Start the searching process. """
@@ -55,7 +56,8 @@ class InfoRetrieval:
                 print("No relevant results. Stopping.")
                 break
             else:
-                query_expansion = QueryExpansion(relevant_results, self.query)
+                full_text = download_and_clean_html(self.url_list)
+                query_expansion = QueryExpansion(relevant_results, self.query, full_text)
                 top2_words = query_expansion.expand_and_reorder_query()
                 # self.query = self.query + " " + top2_words[0] + " " + top2_words[1]
                 self.query = " ".join(top2_words)
@@ -95,9 +97,8 @@ class InfoRetrieval:
                     "snippet": item.get("snippet", "")
                 })
                 
+                self.url_list.append(item.get("link", ""))
                 idx = idx + 1
-                # print(f"Result {idx}\n[\n URL: {search_results['url']}\n Title: {search_results['title']}\n Summary: {search_results['snippet']}\n]")
-         
                     
             print("======================")
             return search_results
