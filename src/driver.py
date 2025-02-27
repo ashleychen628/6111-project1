@@ -1,8 +1,6 @@
 import requests
 import json
 
-from google_search import google_search
-from user_feedback import get_user_feedback
 from query_expansion import QueryExpansion
 from crawl_website import download_and_clean_html
 
