@@ -111,7 +111,7 @@ source env/bin/activate
 // after activate your env
 (env) ./run <google api key> <google engine id> <precision> <query>
 // example
-(env) ./run 0.9 AIzaSyCeF-LloN0i8IJe0HZ8gDLnRTmxSjDpKvw 84f98f408aba949e8 0.9 "Milky Way"
+(env) ./run AIzaSyCeF-LloN0i8IJe0HZ8gDLnRTmxSjDpKvw 84f98f408aba949e8 0.9 "Milky Way"
 ```
 ### **Our Google API key and Google Engine ID**
 - "api_key": "AIzaSyCeF-LloN0i8IJe0HZ8gDLnRTmxSjDpKvw"
