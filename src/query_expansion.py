@@ -30,7 +30,7 @@ class QueryExpansion:
         original_query_text = " ".join(self.current_query)
         documents.append(original_query_text)
 
-        vectorizer = TfidfVectorizer()
+        vectorizer = TfidfVectorizer(lowercase=True)
         tfidf_matrix = vectorizer.fit_transform(documents)
         feature_names = vectorizer.get_feature_names_out()
 
@@ -49,6 +49,8 @@ class QueryExpansion:
 
         all_query_words = list(set(self.current_query + new_words))
         all_query_words_sorted = sorted(all_query_words, key=lambda w: tfidf_scores[feature_names.tolist().index(w)], reverse=True)
+        print(sorted_words)
+        print(all_query_words_sorted)
 
         return all_query_words_sorted
 
