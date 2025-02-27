@@ -6,18 +6,20 @@ from user_feedback import get_user_feedback
 from query_expansion import QueryExpansion
 from crawl_website import download_and_clean_html
 
-with open("config.json", "r") as config_file:
-    config = json.load(config_file)
+# with open("config.json", "r") as config_file:
+#     config = json.load(config_file)
 
-API_KEY = config["api_key"]
-CX_ID = config["cx_id"]
+# API_KEY = config["api_key"]
+# CX_ID = config["cx_id"]
 
 class InfoRetrieval:
-    def __init__(self, target_precision, query):
+    def __init__(self, target_precision, query, api_key, cx_id):
       """Recieve the target precision and user's query. """
       self.target_precision = target_precision
       self.query = query
       self.total_results = 10
+      self.api_key = api_key
+      self.cx_id = cx_id
 
     def start(self):
       """Start the searching process. """
@@ -27,7 +29,7 @@ class InfoRetrieval:
       else:
         while True:
             print("\n======================")
-            print(f"Parameters:\nClient key  = {API_KEY}\nEngine key  = {CX_ID}")
+            print(f"Parameters:\nClient key  = {self.api_key}\nEngine key  = {self.cx_id}")
             print(f"Query       = {self.query}\nPrecision   = {self.target_precision:.1f}")
             print("======================\n")
             
@@ -60,12 +62,10 @@ class InfoRetrieval:
 
     def google_search(self):
         """Query the Google API to get the top 10 result. """
-        api_key=API_KEY
-        cx_id=CX_ID
         num_results=10
 
         url = "https://www.googleapis.com/customsearch/v1"
-        params = {"key": api_key, "cx": cx_id, "q": self.query, "num": num_results}
+        params = {"key": self.api_key, "cx": self.cx_id, "q": self.query, "num": num_results}
 
         response = requests.get(url, params=params)
         
