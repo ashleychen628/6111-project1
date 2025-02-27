@@ -12,13 +12,12 @@ class QueryExpansion:
         self.current_query = current_query.split()
 
     def select_top2_words(self):
-        """ Extract the two most important words from the relevant results tagged by the user,
-            and reorder the entire query based on TF-IDF scores. """
+        """Extract the two most important words from relevant results and reorder the entire query."""
 
         documents = []
+        stop_words_set = set()
+
         file_path = "proj1-stop.txt"
-
-
         with open(file_path, "r", encoding="utf-8") as file:
             stop_words_set = set(line.strip().lower() for line in file)
 
@@ -35,23 +34,19 @@ class QueryExpansion:
         feature_names = vectorizer.get_feature_names_out()
 
         tfidf_scores = np.sum(tfidf_matrix.toarray(), axis=0)
-
-        sorted_indices = np.argsort(tfidf_scores)[::-1]
-        sorted_words = feature_names[sorted_indices]
+        word_score_map = {feature_names[i]: tfidf_scores[i] for i in range(len(feature_names))}
 
         new_words = []
-        for word in sorted_words:
+        for word in sorted(word_score_map, key=word_score_map.get, reverse=True):
             if word not in self.current_query:
                 new_words.append(word)
             if len(new_words) == 2:
                 break
 
 
-        all_query_words = list(set(self.current_query + new_words))
-        all_query_words_sorted = sorted(all_query_words, key=lambda w: tfidf_scores[feature_names.tolist().index(w)], reverse=True)
-        print(sorted_words)
-        print(all_query_words_sorted)
+        all_query_words = self.current_query + new_words
+        all_query_words_sorted = sorted(all_query_words, key=lambda w: word_score_map.get(w, 0), reverse=True)
 
-        return all_query_words_sorted
+        return " ".join(all_query_words_sorted)
 
 

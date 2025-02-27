@@ -26,11 +26,8 @@ class InfoRetrieval:
             self.query = input("Search Here: ")
             self.target_precision = float(input("Enter target precision (0 to 1): "))
 
-        used_words = [word.casefold() for word in self.query.split()]
-        used_words_set = set(used_words)
-
         while True:
-            print(f"\nSearching for: {' '.join(used_words)}")
+            print(f"\nSearching for: {self.query}")
             search_results = self.google_search()
 
             if not search_results or len(search_results) < 10:
@@ -49,11 +46,8 @@ class InfoRetrieval:
                 print("No relevant results. Stopping.")
                 break
             else:
-                query_expansion = QueryExpansion(relevant_results, " ".join(used_words))
-                top2_words = query_expansion.select_top2_words()
-
-                # Update the next searching query, expanded and reordered
-                self.query = top2_words
+                query_expansion = QueryExpansion(relevant_results, self.query)
+                self.query = query_expansion.select_top2_words()
                 print(f"Expanded and Reordered Query: {self.query}")
 
     def google_search(self):
