@@ -12,7 +12,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 class QueryExpansion:
     def __init__(self, relevant_results, current_query):
         self.relevant_results = relevant_results
-        self.current_query = current_query
+        self.current_query = current_query.casefold().split()
         self.documents = self.process_documents()
         self.vectorizer, self.tfidf_matrix, self.feature_names = self.compute_tfidf(self.documents)
         
@@ -27,7 +27,7 @@ class QueryExpansion:
             snippet = re.sub(r"[^a-zA-Z0-9 ]+", "", res["snippet"]).casefold()
             filtered_snippet = " ".join([word for word in snippet.split() if word not in stop_words_set])
             documents.append(filtered_snippet)
-
+            
         return documents
 
     def compute_tfidf(self, documents):
@@ -50,7 +50,7 @@ class QueryExpansion:
         # Select words that are NOT already in the query
         new_words = []
         for word in sorted_words:
-            if word not in self.current_query.casefold():
+            if word not in self.current_query:
                 new_words.append(word)
             if len(new_words) == 2:  
                 break

@@ -22,8 +22,8 @@ class InfoRetrieval:
     def start(self):
       """Start the searching process. """
       if self.query == None or self.target_precision == None:
-        self.query = input("Search Here: ")
-        self.target_precision = float(input("Enter target precision (0 to 1): "))
+          self.query = input("Search Here: ")
+          self.target_precision = float(input("Enter target precision (0 to 1): "))
       else:
         while True:
             print(f"\nSearching for: {self.query}")
@@ -46,9 +46,9 @@ class InfoRetrieval:
                 break
             else:
                 query_expansion = QueryExpansion(relevant_results, self.query)
-                top2_words = query_expansion.select_top2_words()
-                self.query = self.query + " " + top2_words[0] + " " + top2_words[1]
-                
+                top2_words = query_expansion.expand_and_reorder_query()
+                # self.query = self.query + " " + top2_words[0] + " " + top2_words[1]
+                self.query = " ".join(top2_words)
 
     def google_search(self):
         """Query the Google API to get the top 10 result. """
@@ -107,4 +107,3 @@ class InfoRetrieval:
                 relevant_results.append(result)
 
         return relevant_results
-
