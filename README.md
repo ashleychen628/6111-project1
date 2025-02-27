@@ -30,18 +30,93 @@ This project implements **two key query expansion techniques**:
 - Reorders the **expanded query** to **prioritize more relevant terms**.
 - Ensures the **original query words always remain at the front** to preserve intent.
 
-## **Installation**
-### **1. Clone the Repository**
+## **Query-Modification Method**
+
+Our query-modification method is designed to iteratively improve search queries by identifying and incorporating the most relevant keywords while preserving an optimal query structure. This ensures that each refinement leads to better search results, increasing precision with every round.
+
+### 1. Selecting New Keywords
+
+Each round of query expansion selects two new words that are highly relevant to the search intent. The process is as follows:
+
+#### Step 1: Extracting Key Terms from Relevant Documents
+
+- The system collects snippets from the search results that the user has marked as **relevant**.
+- These snippets are **cleaned and preprocessed**:
+  - Removing special characters, punctuation, and numbers.
+  - Converting text to lowercase (`casefold()`).
+  - Removing **stopwords** from a predefined list (`proj1-stop.txt`).
+- After preprocessing, each snippet is treated as a **document** for term analysis.
+
+#### Step 2: Computing Word Importance Using TF-IDF
+
+- A **TF-IDF vectorizer** is used to **compute the importance** of words in the cleaned snippets.
+- The **TF-IDF score** represents how important a word is in the given context.
+- Words with **higher TF-IDF scores** across all relevant snippets are considered **more informative**.
+
+#### Step 3: Filtering and Selecting the Top 2 Words
+
+- The **top TF-IDF words** are sorted in **descending order of importance**.
+- Words **already present** in the original query are ignored to avoid redundancy.
+- The system selects the **first two words** that are **not already in the query**.
+- If there are fewer than two valid words, it selects as many as possible.
+
+---
+
+### 2. Determining Query Word Order
+
+After selecting the most relevant words, the query is **expanded and reordered** for better ranking and retrieval performance. The following steps are used:
+
+#### Step 1: Expanding the Query
+
+- The new keywords are added to the current query to form an **expanded query**.
+- The updated query consists of:
+
+  ```
+  original query + new top 2 words
+  ```
+
+- This ensures that the expanded query retains its **original intent** while incorporating relevant new terms.
+
+#### Step 2: Reordering Using Cosine Similarity
+
+- The expanded query is **vectorized** using the same **TF-IDF model**.
+- The **cosine similarity** between the query vector and the TF-IDF vectors of the relevant documents is computed.
+- This similarity score determines how well each word in the query **aligns with the relevant results**.
+
+#### Step 3: Sorting Words Based on Relevance
+
+- Words in the expanded query are **reordered** based on their average cosine similarity scores.
+- Words that have **higher similarity** to relevant documents are placed **earlier in the query**.
+- This ensures that **more relevant terms appear first**, improving search engine ranking.
+
+---
+
+### 3. Summary
+
+- **TF-IDF scoring** is used to extract **the two most relevant** new words.
+- The **original query is preserved**, and new words are **added in a structured way**.
+- **Cosine similarity reordering** ensures that **more relevant terms appear first**.
+- This method ensures that the query **gradually improves over multiple iterations**, leading to higher precision and better retrieval results.
+
+## **Run the Project**
 ```sh
 git clone https://github.com/your-username/your-repo.git
 cd your-repo
 
 // after creating your virtual environment
-pip install -r requirements.txt
+python3 -m venv env
+source env/bin/activate
+(env) pip install -r requirements.txt
 
 // after activate your env
-./run <target_precision> "<your query>"
+(env) ./run <google api key> <google engine id> <precision> <query>
+// example
+(env) ./run 0.9 AIzaSyCeF-LloN0i8IJe0HZ8gDLnRTmxSjDpKvw 84f98f408aba949e8 0.9 "Milky Way"
 ```
+### **Our Google API key and Google Engine ID**
+- "api_key": "AIzaSyCeF-LloN0i8IJe0HZ8gDLnRTmxSjDpKvw"
+- "cx_id": "84f98f408aba949e8"
+
 
 ## **Code Structure**
 ```
