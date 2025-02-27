@@ -18,6 +18,9 @@ from bs4 import BeautifulSoup
 #         print(f"Error: {e}")
 DOC_PATH = "../data/relevant_docs"
 
+if not os.path.exists(DOC_PATH):
+    os.makedirs(DOC_PATH)
+
 def download_and_clean_html(url, index):
     """ Reads an HTML file, extracts text, and cleans it for indexing. """
     try:
