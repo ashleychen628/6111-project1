@@ -75,8 +75,8 @@ class InfoRetrieval:
                 search_results.append({
                     "url": url,
                     "title": item.get("title", ""),
-                    "snippet": snippet,  # 仍然使用 snippet 进行用户交互
-                    "full_text": full_text  # 仅用于 query expansion
+                    "snippet": snippet,
+                    "full_text": full_text
                 })
 
                 idx += 1

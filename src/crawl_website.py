@@ -29,8 +29,10 @@ def download_and_clean_html(url, index):
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
 }
 
-        response = requests.get(url, headers=headers, timeout=5)
+        response = requests.get(url, headers=headers, timeout=10)
         if response.status_code == 403:
+            return None
+        if response.status_code == 503:
             return None
         response.raise_for_status()
 
