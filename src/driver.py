@@ -26,7 +26,11 @@ class InfoRetrieval:
           self.target_precision = float(input("Enter target precision (0 to 1): "))
       else:
         while True:
-            print(f"\nSearching for: {self.query}")
+            print("\n======================")
+            print(f"Parameters:\nClient key  = {API_KEY}\nEngine key  = {CX_ID}")
+            print(f"Query       = {self.query}\nPrecision   = {self.target_precision:.1f}")
+            print("======================\n")
+            
             search_results = self.google_search()
 
             if not search_results or len(search_results) < 10:
@@ -36,7 +40,11 @@ class InfoRetrieval:
             relevant_results = self.get_user_feedback(search_results)
             precision = len(relevant_results) / self.total_results  # Precision@10
 
-            print(f"\nPrecision: {precision:.2f}")
+            print("\n======================")
+            print("FEEDBACK SUMMARY")
+            print(f"Query {self.query}")
+            print(f"Precision {precision:.1f}")
+            print("======================\n")
 
             if precision >= self.target_precision:
                 print("Target precision reached. Stopping.")
@@ -65,6 +73,8 @@ class InfoRetrieval:
             results = response.json()
             search_results = []
 
+            print("Google Search Results:\n======================")
+            
             idx = 0
             for item in results.get("items", []):
                 # Check if the obtained url is an html and ignore the non-html
@@ -86,9 +96,10 @@ class InfoRetrieval:
                 })
                 
                 idx = idx + 1
+                # print(f"Result {idx}\n[\n URL: {search_results['url']}\n Title: {search_results['title']}\n Summary: {search_results['snippet']}\n]")
          
-                    #  self.total_results = self.total_results - 1
-
+                    
+            print("======================")
             return search_results
         else:
             print("API Error:", response.status_code, response.text)
@@ -101,7 +112,8 @@ class InfoRetrieval:
         print("\nPlease mark relevant results (Y/N):")
         for idx, result in enumerate(search_results):
             print(f"\nResult {idx+1} \n[\nURL: {result['url']}\nTitle: {result['title']}\nSummary: {result['snippet']}]")
-            user_input = input("Is this relevant? (Y/N): ").strip().lower()
+            print(f"\nRelevant (Y/N)?", end="")
+            user_input = input().strip().lower()
 
             if user_input == "y":
                 relevant_results.append(result)
