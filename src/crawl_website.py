@@ -5,11 +5,11 @@ from bs4 import BeautifulSoup
 
 DOC_PATH = "../data/relevant_docs"
 
-def download_and_clean_html(url_list):
+def download_and_clean_html(url_list, snippet_list):
     """ Reads an HTML file, extracts text, and cleans it for indexing. """
     full_text = []
 
-    for url in url_list:
+    for index, url in enumerate(url_list):
         response = requests.get(url, timeout=10)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, "html.parser")
@@ -22,6 +22,10 @@ def download_and_clean_html(url_list):
             text = re.sub(r"[^a-zA-Z0-9 ]+", "", text)
      
             text = text.casefold().split()
+
+            full_text += text
+        else:
+            text = snippet_list[index].split()
 
             full_text += text
     

@@ -21,6 +21,7 @@ class InfoRetrieval:
       self.api_key = api_key
       self.cx_id = cx_id
       self.url_list = []
+      self.snippet_list = []
 
     def start(self):
       """Start the searching process. """
@@ -56,7 +57,7 @@ class InfoRetrieval:
                 print("No relevant results. Stopping.")
                 break
             else:
-                full_text = download_and_clean_html(self.url_list)
+                full_text = download_and_clean_html(self.url_list, self.snippet_list)
                 query_expansion = QueryExpansion(relevant_results, self.query, full_text)
                 top2_words = query_expansion.expand_and_reorder_query()
                 # self.query = self.query + " " + top2_words[0] + " " + top2_words[1]
@@ -79,25 +80,13 @@ class InfoRetrieval:
             
             idx = 0
             for item in results.get("items", []):
-                # Check if the obtained url is an html and ignore the non-html
-                # TODO: add this explanation to README and explain we won't show the non-thml files
-                # url = item.get("link", "")
-                # res = requests.head(url)
-                # TODO: handle non-htmls
-                # content_type = response.headers.get("Content-Type", "")
-                # print(content_type)
-                # if "text/html" in content_type:
-                    # print("an HTML page")
                 url = item.get("link", "")
-                # TODO: handle non-htmls
-                # download_and_clean_html(url, idx)
                 search_results.append({
                     "url": item.get("link", ""),
                     "title": item.get("title", ""),
                     "snippet": item.get("snippet", "")
                 })
-                
-                self.url_list.append(item.get("link", ""))
+
                 idx = idx + 1
                     
             print("======================")
@@ -118,5 +107,9 @@ class InfoRetrieval:
 
             if user_input == "y":
                 relevant_results.append(result)
+                
+                self.url_list.append(result['url'])
+                print(result['url'])
+                self.snippet_list.append(result['snippet'])
 
         return relevant_results
