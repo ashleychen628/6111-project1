@@ -65,29 +65,19 @@ class InfoRetrieval:
             results = response.json()
             search_results = []
 
-            idx = 0
-            for item in results.get("items", []):
-                # Check if the obtained url is an html and ignore the non-html
-                # TODO: add this explanation to README and explain we won't show the non-thml files
-                # url = item.get("link", "")
-                # res = requests.head(url)
-                # TODO: handle non-htmls
-                # content_type = response.headers.get("Content-Type", "")
-                # print(content_type)
-                # if "text/html" in content_type:
-                    # print("an HTML page")
+            for idx, item in enumerate(results.get("items", [])):
                 url = item.get("link", "")
-                # TODO: handle non-htmls
-                # download_and_clean_html(url, idx)
+                snippet = item.get("snippet", "")
+
+
+                full_text = download_and_clean_html(url, idx)
+
+                document_text = " ".join(full_text) if full_text else snippet
                 search_results.append({
-                    "url": item.get("link", ""),
+                    "url": url,
                     "title": item.get("title", ""),
-                    "snippet": item.get("snippet", "")
+                    "snippet": document_text
                 })
-                
-                idx = idx + 1
-         
-                    #  self.total_results = self.total_results - 1
 
             return search_results
         else:
